@@ -32,7 +32,6 @@ def output_data(share_data,ticker):
     output_file("./templates/graph.html", title="closing cost plot") 
     save(p)
 
-app.vars={}
 
 @app.route('/',methods=['GET','POST'])
 def index(): 
@@ -40,10 +39,10 @@ def index():
         return render_template('index.html')
     else:
         # request was a POST
-        app.vars['ticker'] = request.form['ticker'] # get ticker
+        ticker = request.form['ticker'] # get ticker
 	recorded_date = (datetime.datetime.now().strftime('%Y-%m-%d')) # record the date of input
-	share_data = closing_price(app.vars['ticker'],recorded_date) # get closing price for that ticker
-        output_data(share_data,app.vars['ticker']) # create html plot using bokeh
+	share_data = closing_price(ticker,recorded_date) # get closing price for that ticker
+        output_data(share_data,ticker) # create html plot using bokeh
         return redirect('/graph') # call that page
 
 @app.route('/graph')
