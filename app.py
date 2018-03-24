@@ -39,10 +39,10 @@ def index():
         return render_template('index.html')
     else:
         # request was a POST
-        ticker = request.form['ticker'] # get ticker
+        # ticker = request.form['ticker'] # get ticker
 	recorded_date = (datetime.datetime.now().strftime('%Y-%m-%d')) # record the date of input
-	share_data = closing_price(ticker,recorded_date) # get closing price for that ticker
-        output_data(share_data,ticker) # create html plot using bokeh
+	share_data = closing_price(request.form['ticker'],recorded_date) # get closing price for that ticker
+        output_data(share_data, request.form['ticker'])  # create html plot using bokeh
         return redirect('/graph') # call that page
 
 @app.route('/graph')
