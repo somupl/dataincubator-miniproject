@@ -5,6 +5,8 @@ import json
 import pandas as pd
 import numpy as np
 from bokeh.plotting import figure, output_file,save
+from bokeh.embed import components
+
 app = Flask(__name__)
 
 def closing_price(ticker,recorded_date):
@@ -29,8 +31,12 @@ def output_data(share_data,ticker):
     p.yaxis.axis_label = 'Price'
     p.line(date_time(share_data.date), share_data.closingCost, color='DarkBlue', legend=ticker)
     p.legend.location = "top_left"
-    output_file("./templates/graph.html", title="closing cost plot") 
-    save(p)
+    
+    script, div = components(p)
+    return script,div
+    
+    #output_file("./templates/graph.html", title="closing cost plot") 
+    #save(p)
 
 
 @app.route('/',methods=['GET','POST'])
@@ -42,8 +48,9 @@ def index():
         # ticker = request.form['ticker'] # get ticker
 	recorded_date = (datetime.datetime.now().strftime('%Y-%m-%d')) # record the date of input
 	share_data = closing_price(request.form['ticker'],recorded_date) # get closing price for that ticker
-        output_data(share_data, request.form['ticker'])  # create html plot using bokeh
-        return redirect('/graph') # call that page
+        script, div = output_data(share_data, request.form['ticker'])  # create html plot using bokeh
+        #return redirect('/graph') # call that page
+        return render_template('graph_back.html',script=script,div=div,template="Flask")
 
 @app.route('/graph')
 def graph():
